@@ -34,7 +34,9 @@
 #ifdef CONFIG_KSU_SUSFS
 bool ksu_selinux_hide_enabled __read_mostly = true;
 bool ksu_selinux_hide_running __read_mostly = false;
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
 struct selinux_state fake_state;
+#endif
 struct page *fake_status;
 struct selinux_policy *backup_sepolicy;
 DEFINE_STATIC_KEY_FALSE(fake_status_initialize_key);
@@ -373,8 +375,11 @@ static int selinux_hide_feature_set(u64 value)
 			pr_err("no backup sepolicy available, please save feature and reboot to retry!\n");
 			return -EAGAIN;
 		}
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
 		fake_state.initialized = true;
 		fake_state.policy = backup_sepolicy;
+#endif
+
 		ksu_selinux_hide_running = true;
 	} else {
 		ksu_selinux_hide_running = false;
@@ -418,10 +423,14 @@ void __exit ksu_selinux_hide_exit()
 #ifdef CONFIG_KSU_SUSFS
 void initialize_fake_status(void)
 {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
 	mutex_lock(&selinux_state.status_lock);
+#endif
 	if (!fake_status && !ksu_prepare_fake_status_page())
 		fake_status = ksu_fake_status_page;
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0)
 	mutex_unlock(&selinux_state.status_lock);
+#endif
 }
 
 void ksu_selinux_hide_handle_second_stage(void)

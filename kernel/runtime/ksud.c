@@ -29,6 +29,11 @@ static bool ksu_boot_completed __read_mostly = false;
 static bool ksu_vfs_read_hook __read_mostly = true;
 static bool ksu_input_hook __read_mostly = true;
 
+#ifdef CONFIG_KSU_SUSFS
+DEFINE_STATIC_KEY_TRUE(ksu_is_init_rc_hook_enabled);
+DEFINE_STATIC_KEY_TRUE(ksu_is_input_hook_enabled);
+#endif
+
 #ifdef KSU_CAN_USE_JUMP_LABEL
 DEFINE_STATIC_KEY_TRUE(ksud_vfs_read_key);
 static inline void ksu_disable_vfs_read_branch()
@@ -783,8 +788,6 @@ void __init ksu_ksud_init()
 
 #ifdef CONFIG_KSU_SUSFS
 // === susfs inline-hook entry points, called inline by the susfs-patched kernel ===
-DEFINE_STATIC_KEY_TRUE(ksu_is_init_rc_hook_enabled);
-DEFINE_STATIC_KEY_TRUE(ksu_is_input_hook_enabled);
 
 __attribute__((cold)) int ksu_handle_input_handle_event(unsigned int *type, unsigned int *code, int *value)
 {

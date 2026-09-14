@@ -14,7 +14,7 @@
 #ifndef __KSU_H_SLOW_AVC_AUDIT_HOOK
 #define __KSU_H_SLOW_AVC_AUDIT_HOOK
 
-static bool ksu_selinux_hide_enabled;
+extern bool ksu_selinux_hide_enabled;
 static u32 cached_su_sid;
 static u32 priv_app_sid __read_mostly = 0;
 

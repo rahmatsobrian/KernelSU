@@ -230,6 +230,13 @@ void escape_to_root_for_adb_root(void)
 
 #ifdef CONFIG_KSU_SUSFS
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 19, 0)
+static inline u32 current_sid(void) {
+	const struct task_security_struct *tsec = selinux_cred(current_cred());
+	return tsec ? tsec->sid : 0;
+}
+#endif
+
 #define KERNEL_ZYGOTE_NEXT_DOMAIN "u:r:zygote_next:s0"
 #define KERNEL_PRIV_APP_DOMAIN "u:r:priv_app:s0:c512,c768"
 
