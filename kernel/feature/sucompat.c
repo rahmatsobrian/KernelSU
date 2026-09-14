@@ -50,6 +50,7 @@ start_loop:;
 }
 #endif
 
+static char __user *sh_user_path(void)
 {
 	static const char sh_path[] = "/system/bin/sh";
 
